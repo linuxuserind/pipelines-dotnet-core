@@ -32,3 +32,18 @@ steps:
     summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
     reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
     failIfCoverageEmpty: true
+    
+# This job creates a work item, and only runs if the previous job failed
+- job: ErrorHandler
+  dependsOn: Work
+  condition: failed()
+  steps: 
+  - bash: |
+      az boards work-item create \
+        --title "Build $(build.buildNumber) failed" \
+        --type bug \
+        --org $(System.TeamFoundationCollectionUri) \
+        --project $(System.TeamProject)
+    env: 
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+    displayName: 'Create work item on failure'
