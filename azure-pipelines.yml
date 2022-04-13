@@ -34,7 +34,7 @@ steps:
     failIfCoverageEmpty: true
     
 # This job creates a work item, and only runs if the previous job failed
-- job: ErrorHandler
+- task: ErrorHandler
   dependsOn: Work
   condition: failed()
   steps: 
